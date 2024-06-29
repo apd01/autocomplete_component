@@ -1,0 +1,23 @@
+# Node.js dependencies
+node_modules/
+
+# Python bytecode
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Python virtual environment
+venv/
+.env
+
+# Production build folder for React
+/autocomplete/build
+
+# Logs
+npm-debug.log*
+
+# Local development environment files
+*.env.*
+
+# Package lock files
+package-lock.json
