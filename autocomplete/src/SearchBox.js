@@ -4,7 +4,7 @@ function SearchBox({ onSearch }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1); // Step 1: Add selectedIndex state
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Add selectedIndex state
 
   useEffect(() => {
     const handleFetchSuggestions = async () => {
@@ -24,7 +24,6 @@ function SearchBox({ onSearch }) {
   }, [query]);
 
   useEffect(() => {
-    // Step 2: useEffect for handling key down events
     const handleKeyDown = (e) => {
       if (!showSuggestions) return;
       if (e.key === "ArrowDown") {
@@ -89,7 +88,7 @@ function SearchBox({ onSearch }) {
           Search
         </button>
       </form>
-      {showSuggestions && (
+      {showSuggestions && suggestions.length > 0 && (
         <ul
           style={{
             backgroundColor: "#a0a0a0",
@@ -128,6 +127,9 @@ async function fetchSuggestions(query) {
     throw new Error("Network response was not ok");
   }
   const suggestions = await response.json();
+  if (suggestions.length === 0) {
+    return [];
+  }
   return suggestions;
 }
 
