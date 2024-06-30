@@ -22,11 +22,29 @@ def find_suggestions(query: str, data: dict) -> List[str]:
 
     for band in data:
         band_name_lower = band["name"].lower()
-        print(band_name_lower)
-        if band_name_lower.startswith(query):
+        if query in band_name_lower:
             suggestions.append(band["name"])
 
-    return suggestions
+        for album in band["albums"]:
+            album_title_lower = album["title"].lower()
+            if query in album_title_lower:
+                suggestions.append(album["title"] + " " + band["name"])
+
+                for song in album["songs"]:
+                    suggestions.append(
+                        album["title"] + " " + band["name"] + " " + song["title"]
+                    )
+
+            for song in album["songs"]:
+                song_title_lower = song["title"].lower()
+                if query in song_title_lower:
+                    suggestions.append(
+                        song["title"] + " " + album["title"] + " " + band["name"]
+                    )
+    # sort suggestinos by length
+    suggestions.sort(key=len)
+
+    return suggestions[:10]  # Limit the number of suggestions to 10
 
 
 # Load suggestions from a json
@@ -37,7 +55,6 @@ with open("data.json", "r") as file:
 @app.get("/suggestions", response_model=List[str])
 async def read_suggestions(query: str) -> List[str]:
 
-    print(f"Received query: {query}")
+    suggestions = find_suggestions(query, music_data)
 
-    suggestions = find_suggestions(query, data=music_data)
     return suggestions
