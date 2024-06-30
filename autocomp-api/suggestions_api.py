@@ -44,7 +44,6 @@ def find_suggestions(query: str, data: dict) -> List[str]:
     # sort suggestinos by length
     suggestions.sort(key=len)
 
-    print(suggestions)
     return suggestions[:10]  # Limit the number of suggestions to 10
 
 
