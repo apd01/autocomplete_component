@@ -44,11 +44,12 @@ def find_suggestions(query: str, data: dict) -> List[str]:
     # sort suggestinos by length
     suggestions.sort(key=len)
 
+    print(suggestions)
     return suggestions[:10]  # Limit the number of suggestions to 10
 
 
 # Load suggestions from a json
-with open("data.json", "r") as file:
+with open("data.json", "r", encoding="utf-8") as file:
     music_data = json.load(file)
 
 
