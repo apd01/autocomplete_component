@@ -4,23 +4,48 @@ function SearchBox({ onSearch }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Step 1: Add selectedIndex state
 
   useEffect(() => {
     const handleFetchSuggestions = async () => {
       const fetchedSuggestions = await fetchSuggestions(query);
       setSuggestions(fetchedSuggestions);
       setShowSuggestions(true);
+      setSelectedIndex(-1); // Reset selectedIndex when new suggestions are fetched
     };
 
     if (query.length > 1) {
-      // Only fetch suggestions if query length is more than 1
-      const timerId = setTimeout(handleFetchSuggestions, 200); // Debounce fetching
+      const timerId = setTimeout(handleFetchSuggestions, 200);
       return () => clearTimeout(timerId);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
     }
   }, [query]);
+
+  useEffect(() => {
+    // Step 2: useEffect for handling key down events
+    const handleKeyDown = (e) => {
+      if (!showSuggestions) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault(); // Prevent the page from scrolling
+        setSelectedIndex((prevIndex) => (prevIndex + 1) % suggestions.length);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault(); // Prevent the page from scrolling
+        setSelectedIndex(
+          (prevIndex) =>
+            (prevIndex - 1 + suggestions.length) % suggestions.length
+        );
+      } else if (e.key === "Enter" && selectedIndex >= 0) {
+        e.preventDefault(); // Prevent form submission
+        setQuery(suggestions[selectedIndex]);
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [showSuggestions, suggestions, selectedIndex]);
 
   const handleChange = (event) => {
     setQuery(event.target.value);
@@ -29,7 +54,7 @@ function SearchBox({ onSearch }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSearch(query);
-    setShowSuggestions(false); // Hide suggestions on search
+    setShowSuggestions(false);
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -65,7 +90,13 @@ function SearchBox({ onSearch }) {
         </button>
       </form>
       {showSuggestions && (
-        <ul>
+        <ul
+          style={{
+            backgroundColor: "#a0a0a0",
+            padding: "10px",
+            borderRadius: "5px",
+          }}
+        >
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
@@ -75,7 +106,8 @@ function SearchBox({ onSearch }) {
                 padding: "5px",
                 borderRadius: "5px",
                 marginBottom: "5px",
-                backgroundColor: "#a2a2a2",
+                backgroundColor:
+                  index === selectedIndex ? "#d2d2d2" : "transparent",
                 listStyleType: "none",
               }}
             >
