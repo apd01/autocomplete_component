@@ -28,17 +28,28 @@ function SearchBox({ onSearch }) {
       if (!showSuggestions) return;
       if (e.key === "ArrowDown") {
         e.preventDefault(); // Prevent the page from scrolling
-        setSelectedIndex((prevIndex) => (prevIndex + 1) % suggestions.length);
+        setSelectedIndex(
+          (prevIndex) => (prevIndex + 1) % (suggestions?.length || 0)
+        );
       } else if (e.key === "ArrowUp") {
         e.preventDefault(); // Prevent the page from scrolling
         setSelectedIndex(
           (prevIndex) =>
-            (prevIndex - 1 + suggestions.length) % suggestions.length
+            (prevIndex - 1 + (suggestions?.length || 0)) %
+            (suggestions?.length || 0)
         );
-      } else if (e.key === "Enter" && selectedIndex >= 0) {
+      } else if (e.key === "Enter") {
         e.preventDefault(); // Prevent form submission
-        setQuery(suggestions[selectedIndex]);
-        setShowSuggestions(false);
+        if (selectedIndex >= 0) {
+          setQuery(suggestions[selectedIndex]);
+          setShowSuggestions(false);
+        }
+      } else if (e.key === " ") {
+        // e.preventDefault();
+        if (selectedIndex >= 0) {
+          setQuery(suggestions[selectedIndex]);
+          setShowSuggestions(false);
+        }
       }
     };
 
