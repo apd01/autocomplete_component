@@ -45,7 +45,7 @@ function SearchBox({ onSearch }) {
           setShowSuggestions(false);
         }
       } else if (e.key === " ") {
-        // e.preventDefault();
+        console.log("space");
         if (selectedIndex >= 0) {
           setQuery(suggestions[selectedIndex]);
           setShowSuggestions(false);
@@ -102,9 +102,13 @@ function SearchBox({ onSearch }) {
       {showSuggestions && suggestions.length > 0 && (
         <ul
           style={{
-            backgroundColor: "#a0a0a0",
+            position: "absolute", // This makes the list float over content below
+            top: "calc(100% - 25px)", // Positions the list right below the search box
+            width: "300px",
+            backgroundColor: "#282c34",
             padding: "10px",
             borderRadius: "5px",
+            justifyContent: "center",
           }}
         >
           {suggestions.map((suggestion, index) => (
@@ -115,10 +119,11 @@ function SearchBox({ onSearch }) {
                 cursor: "pointer",
                 padding: "5px",
                 borderRadius: "5px",
-                marginBottom: "5px",
+                marginBottom: "0px",
                 backgroundColor:
-                  index === selectedIndex ? "#d2d2d2" : "transparent",
+                  index === selectedIndex ? "#a0a0a0" : "transparent",
                 listStyleType: "none",
+                textAlign: "left",
               }}
             >
               {suggestion}
