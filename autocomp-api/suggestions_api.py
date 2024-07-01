@@ -20,29 +20,39 @@ def find_suggestions(query: str, data: dict) -> List[str]:
     query = query.lower()
     suggestions = []
 
-    for band in data:
-        band_name_lower = band["name"].lower()
-        if query in band_name_lower:
-            suggestions.append(band["name"])
+    queries = [
+        word for word in query.split(" ") if word and len(word) > 1
+    ]  # the list comprehension removes empty strings
 
-        for album in band["albums"]:
-            album_title_lower = album["title"].lower()
-            if query in album_title_lower:
-                suggestions.append(album["title"] + " " + band["name"])
+    for word in queries:
+        print(f"Searching for: '{word}'")
+        for band in data:
+            band_name_lower = band["name"].lower()
+            if word in band_name_lower:
+                suggestions.append(band["name"])
+
+            for album in band["albums"]:
+                album_title_lower = album["title"].lower()
+                if word in album_title_lower:
+                    suggestions.append(album["title"] + " " + band["name"])
+
+                    for song in album["songs"]:
+                        suggestions.append(
+                            album["title"] + " " + band["name"] + " " + song["title"]
+                        )
 
                 for song in album["songs"]:
-                    suggestions.append(
-                        album["title"] + " " + band["name"] + " " + song["title"]
-                    )
+                    song_title_lower = song["title"].lower()
+                    if word in song_title_lower:
+                        suggestions.append(
+                            song["title"] + " " + album["title"] + " " + band["name"]
+                        )
 
-            for song in album["songs"]:
-                song_title_lower = song["title"].lower()
-                if query in song_title_lower:
-                    suggestions.append(
-                        song["title"] + " " + album["title"] + " " + band["name"]
-                    )
-    # sort suggestinos by length
+    # sort suggestions by length
     suggestions.sort(key=len)
+
+    # remove duplicates
+    suggestions = list(dict.fromkeys(suggestions))
 
     return suggestions[:10]  # Limit the number of suggestions to 10
 
