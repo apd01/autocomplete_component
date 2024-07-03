@@ -50,6 +50,8 @@ function SearchBox({ onSearch }) {
           setQuery(suggestions[selectedIndex]);
           setShowSuggestions(false);
         }
+      } else if (e.key === "Escape") {
+        setShowSuggestions(false);
       }
     };
 
