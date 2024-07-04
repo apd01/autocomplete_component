@@ -72,6 +72,9 @@ def find_suggestions(query: str, data: dict) -> List[str]:
 
     ranked_suggestions = sorted(suggestions, key=lambda x: calculate_rank(queries, x))
 
+    # Remove duplicates
+    ranked_suggestions = list(dict.fromkeys(ranked_suggestions))
+
     return ranked_suggestions[:10]
 
 
