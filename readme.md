@@ -46,7 +46,7 @@ python -m uvicorn suggestions_api:app
 
 ## Video Demo
 
-[Link to video demo](www.example.com)
+[Link to video demo](https://youtu.be/PlsXmTPjjv0)
 
 ## Author
 
